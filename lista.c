@@ -1,10 +1,19 @@
 #include "lista.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
 
 
 
 lista_t* lista_crear(){
-    return NULL;
+
+    lista_t* lista = calloc(1, sizeof(lista_t));
+    if(!lista){
+        return NULL;
+    }
+    
+    return lista;
 }
 
 
@@ -109,6 +118,34 @@ void* lista_primero(lista_t* lista){
 
 
 void lista_destruir(lista_t* lista){
+    
+    if(!lista){
+        printf("\n\tFallo: No existe la lista a destruir.\n");
+        return;
+    }
+    else if(lista_vacia(lista)){
+        free(lista);
+        return;
+    }
+    else{
+
+        nodo_t* nodo_actual = lista->nodo_inicio;
+        nodo_t* nodo_previo = NULL;
+        size_t i = 0;
+
+        while((i < lista->cantidad) && (nodo_actual != NULL)){
+
+            nodo_previo = nodo_actual;
+            nodo_actual = nodo_actual->siguiente;
+            free(nodo_previo);
+            i++;
+
+        }
+
+        free(lista);
+
+    }
+
 }
 
 

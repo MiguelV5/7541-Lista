@@ -20,6 +20,33 @@ lista_t* lista_crear(){
 
 
 int lista_insertar(lista_t* lista, void* elemento){
+
+    if(!lista){
+        return -1;
+    }
+
+    nodo_t* nodo_nuevo = calloc(1, sizeof(nodo_t));
+    if(!nodo_nuevo){
+        return -1;
+    }
+
+    nodo_nuevo->elemento = elemento;
+    nodo_nuevo->siguiente = NULL;
+    
+    if(lista->cantidad == 0){
+
+        lista->nodo_inicio = nodo_nuevo;
+        lista->nodo_fin = nodo_nuevo;
+        lista->cantidad++;
+
+    }
+    else{
+
+        lista->nodo_fin->siguiente = nodo_nuevo;
+        lista->nodo_fin = nodo_nuevo;
+
+    }
+
     return 0;
 }
 
@@ -27,7 +54,13 @@ int lista_insertar(lista_t* lista, void* elemento){
 
 
 int lista_insertar_en_posicion(lista_t* lista, void* elemento, size_t posicion){
-    return 0;
+    
+    if(!lista){
+        return -1;
+    }
+
+    return -1;
+    
 }
 
 
@@ -62,7 +95,18 @@ void* lista_ultimo(lista_t* lista){
 
 
 bool lista_vacia(lista_t* lista){
-    return false;
+
+    if(!lista){
+        return false;
+    }
+
+    if((lista->nodo_inicio == NULL) && (lista->nodo_fin == NULL)){
+        return true;
+    }
+    else{
+        return false;
+    }
+
 }
 
 

@@ -70,10 +70,21 @@
 
 ▒▒▒▒▒▒▒▒▒▒▒▒  Aclaraciones:  ▒▒▒▒▒▒▒▒▒▒▒▒ 
 
-    ▒▒▒▒    ▒▒▒▒
+    ▒▒▒▒  Detalles de notación  ▒▒▒▒
+        Lista inexistente hace referencia a una lista_t* lista == NULL
+        Lista vacía se refiere a una (lista_t* lista != NULL) tal que 
+        (lista->nodo_inicio == lista->nodo_fin == NULL);
 
 
-    ▒▒▒▒    ▒▒▒▒
+    ▒▒▒▒  Sobre los elementos pasados por parametro por el usuario.  ▒▒▒▒
+        Notar que no se hizo ninguna prueba sobre los elementos pasados por
+        el usuario a la hora de insertar en la lista.
+        Esto se debe a que los datos que el mismo almacene se asumen como su responsabilidad, y en ningún momento se modifica o verifica el elemento que requiera insertar.
+        Esto excluye entonces las pruebas de todo lo relacionado con revisión de
+        cualquier puntero NULL de elemento que se pase, y el manejo de memoria de dichos
+        elementos debe ser administrada (claramente, solo en caso de tener elementos en Heap),
+        a su vez, por el usuario.
+
 
 
 

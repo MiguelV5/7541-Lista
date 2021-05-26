@@ -71,24 +71,32 @@
 ▒▒▒▒▒▒▒▒▒▒▒▒  Aclaraciones:  ▒▒▒▒▒▒▒▒▒▒▒▒ 
 
     ▒▒▒▒  Detalles de notación  ▒▒▒▒
-        Lista inexistente hace referencia a una lista_t* lista == NULL
-        Lista vacía se refiere a una (lista_t* lista != NULL) tal que 
-        (lista->nodo_inicio == lista->nodo_fin == NULL);
+        Lista INEXISTENTE hace referencia a un puntero a lista que apunta a NULL:
+            (lista_t* lista == NULL)
+        Una Lista VACÍA puede referirse a:
+            -Una lista INEXISTENTE.
+            -Una lista EXISTENTE cuyos nodos de inicio y fin son NULL, y cuya cantidad de
+            elementos  es cero.
+            Denomino a esta última "LISTA SIN ELEMENTOS"
 
 
     ▒▒▒▒  Sobre los elementos pasados por parametro por el usuario.  ▒▒▒▒
-        Notar que no se hizo ninguna prueba sobre los elementos pasados por
-        el usuario a la hora de insertar en la lista.
-        Esto se debe a que los datos que el mismo almacene se asumen como su responsabilidad, y en ningún momento se modifica o verifica el elemento que requiera insertar.
-        Esto excluye entonces las pruebas de todo lo relacionado con revisión de
-        cualquier puntero NULL de elemento que se pase, y el manejo de memoria de dichos
-        elementos debe ser administrada (claramente, solo en caso de tener elementos en Heap),
-        a su vez, por el usuario.
+        Los datos que el usuario almacene se asumen como su responsabilidad, y en ningún
+        momento se modifica o verifica el elemento que requiera insertar, salvo si es NULL o no.
+        Esto excluye entonces al manejo de memoria de dichos elementos, por lo cual debe ser
+        administrada a su vez por el usuario (claramente, solo en caso de tener
+        elementos almacenados en el Heap).
 
 
+    ▒▒▒▒  Cita de linea 215, pruebas.c  ▒▒▒▒
+        Se tiene:
+            [a]->[e]->[i]->[o]->[u]
+            [inicio] == [a] ; [fin] == [u]
+        Se quiere:
+            [a]->[x]->[e]->[i]->[o]->[y]->[u]
+        Por lo cual, tras insertar cada uno: 
+            -Sigte. a [x] debe ser [e];
+            -Sigte. a [o] debe ser [y]; 
 
 
-    ▒▒▒▒    ▒▒▒▒
-
-
-        _______________________________________________________________________________
+        

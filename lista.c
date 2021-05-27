@@ -6,6 +6,23 @@
 
 
 
+
+/**
+ * Devuelve true si la lista tiene un solo elemento, false en caso contrario.
+ */
+bool lista_tiene_elemento_unico(lista_t* lista){
+
+    if(lista_vacia(lista)){
+        return false;
+    }
+
+    return ((lista->cantidad == 1) && (lista->nodo_inicio == lista->nodo_fin));
+
+}
+
+
+
+
 lista_t* lista_crear(){
 
     lista_t* lista = calloc(1, sizeof(lista_t));
@@ -53,8 +70,6 @@ int lista_insertar(lista_t* lista, void* elemento){
     return 0;
 
 }
-
-
 
 
 
@@ -128,7 +143,7 @@ int lista_insertar_en_posicion(lista_t* lista, void* elemento, size_t posicion){
         return se_inserto;
     }
 
-    if(posicion >= lista->cantidad){ //La posicion no existe en la lista.
+    if(posicion >= lista->cantidad){ 
 
         se_inserto = lista_insertar(lista, elemento);
 
@@ -151,16 +166,147 @@ int lista_insertar_en_posicion(lista_t* lista, void* elemento, size_t posicion){
 
 
 
+/**
+ * Borra el ultimo elemento de una lista de MÍNIMO 2 elementos.
+ * No se realizan verificaciones sobre la lista, función exclusiva de
+ * dicho caso particular ASEGURADO.
+ */
+void borrar_ultimo_de_multiples(lista_t* lista){
+
+    size_t posicion_anterior_al_final = (lista->cantidad - 2); // Explicación en Readme.txt
+    nodo_t* nodo_anterior_al_final = lista->nodo_inicio;
+    nodo_t* nodo_a_eliminar = NULL;
+
+    for(size_t i = 0; i < posicion_anterior_al_final; i++){
+
+        nodo_anterior_al_final = nodo_anterior_al_final->siguiente;
+
+    }
+
+    nodo_a_eliminar = nodo_anterior_al_final->siguiente;
+    free(nodo_a_eliminar);
+
+    lista->nodo_fin = nodo_anterior_al_final;
+    lista->nodo_fin->siguiente = NULL;
+    lista->cantidad--;
+
+}
+
+
+
+
 int lista_borrar(lista_t* lista){
+
+    if(lista_vacia(lista)){
+        return -1;
+    }
+
+    if(lista_tiene_elemento_unico(lista)){
+
+        free(lista->nodo_inicio);
+        lista->nodo_inicio = NULL;
+        lista->nodo_fin = NULL;
+        lista->cantidad--;
+
+    }
+    else{
+
+        borrar_ultimo_de_multiples(lista);
+
+    }
+
     return 0;
+
+}
+
+
+
+
+/**
+ * Borra el elemento de una posición válida que no está ni al inicio
+ * ni al final de una lista.
+ * No se realizan verificaciones sobre la lista, 
+ * función exclusiva de dicho caso particular ASEGURADO.
+ */
+int borrador_elemento_intermedio(lista_t* lista , size_t posicion){
+
+    if(posicion == 0){
+        return -1;
+    }
+
+    size_t posicion_anterior_a_objetivo = (posicion - 1);
+    nodo_t* nodo_anterior_a_objetivo = lista->nodo_inicio;
+    nodo_t* nodo_a_eliminar = NULL;
+
+    for(size_t i = 0; i < posicion_anterior_a_objetivo; i++){
+
+        nodo_anterior_a_objetivo = nodo_anterior_a_objetivo->siguiente;
+
+    }
+
+    nodo_a_eliminar = nodo_anterior_a_objetivo->siguiente;
+    
+    nodo_anterior_a_objetivo->siguiente = nodo_a_eliminar->siguiente;
+
+    free(nodo_a_eliminar);
+    lista->cantidad--;
+
+    return 0;
+
 }
 
 
 
 
 int lista_borrar_de_posicion(lista_t* lista, size_t posicion){
-    return 0;
+
+    int se_borro = -1;
+    
+    if(lista_vacia(lista)){
+        return -1;
+    }
+
+    if(posicion >= (lista->cantidad - 1)){
+
+        se_borro = lista_borrar(lista);
+    
+    }
+    else{
+        
+        se_borro = borrador_elemento_intermedio(lista, posicion);
+        
+    }
+
+    return se_borro;
+
 }
+
+
+
+
+/**
+ * Obtiene el elemento de la posición requerida, la cual NO debe ser
+ * ni el final, ni el inicio, ni una posición invalida de la lista.
+ * No se realizan verificaciones sobre la lista ni sobre la posición,
+ * función exclusiva de dicho caso particular ASEGURADO. 
+ */
+void* obtencion_elemento_intermedio(lista_t* lista, size_t posicion){
+
+    nodo_t* nodo_actual = lista->nodo_inicio;
+    size_t posicion_actual = 0;
+
+    while(posicion_actual < posicion){
+
+        nodo_actual = nodo_actual->siguiente;
+        posicion_actual++;
+
+    }
+
+    return nodo_actual->elemento;
+
+}
+
+
 
 
 
@@ -176,29 +322,21 @@ void* lista_elemento_en_posicion(lista_t* lista, size_t posicion){
         return NULL;
     }
     
-    //if(posicion == (lista->cantidad - 1)){
-    //    return lista->nodo_fin->elemento;
-    //}
-    //else if(posicion == 0){
-    //    return lista->nodo_inicio->elemento;
-    //}
-    //else{
-//
-    //    nodo_t* nodo_actual = lista->nodo_inicio;
-    //    size_t posicion_actual = 0;
-//
-    //    while(posicion_actual < posicion){
-//
-    //        nodo_actual = nodo_actual->siguiente;
-    //        posicion_actual++;
-//
-    //    }
-//
-    //    return nodo_actual->elemento;
-//
-    //}
+    if(posicion == (lista->cantidad - 1)){
 
-    return NULL;
+        return lista->nodo_fin->elemento;
+
+    }
+    else if(posicion == 0){
+
+        return lista->nodo_inicio->elemento;
+
+    }
+    else{
+
+        return obtencion_elemento_intermedio(lista, posicion);
+
+    }
 
 }
 
@@ -230,10 +368,9 @@ void* lista_ultimo(lista_t* lista){
     if(lista_vacia(lista)){
         return NULL;
     }
-    //else{
-    //    return lista->nodo_fin->elemento;
-    //}
-    return NULL;
+    else{
+        return lista->nodo_fin->elemento;
+    }
 
 }
 
@@ -247,22 +384,21 @@ size_t lista_elementos(lista_t* lista){
     if(lista_vacia(lista)){
         return 0;
     }
-    //else{
-//
-    //    nodo_t* nodo_actual = lista->nodo_inicio;
-    //    size_t contador_elementos = 0;
-//
-    //    while(nodo_actual != NULL){
-//
-    //        contador_elementos++;
-    //        nodo_actual = nodo_actual->siguiente;
-//
-    //    }
-//
-    //    return contador_elementos;
-//
-    //}
-    return 0;
+    else{
+
+        nodo_t* nodo_actual = lista->nodo_inicio;
+        size_t contador_elementos = 0;
+
+        while(nodo_actual != NULL){
+
+            contador_elementos++;
+            nodo_actual = nodo_actual->siguiente;
+
+        }
+
+        return contador_elementos;
+
+    }
 
 }
 

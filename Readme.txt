@@ -77,7 +77,23 @@
             -Una lista INEXISTENTE.
             -Una lista EXISTENTE cuyos nodos de inicio y fin son NULL, y cuya cantidad de
             elementos  es cero.
-            Denomino a esta última "LISTA SIN ELEMENTOS"
+            Denomino a esta última "LISTA SIN ELEMENTOS".
+
+    ▒▒▒▒  Sobre separación de grupos de pruebas  ▒▒▒▒
+        Decidí separar las pruebas de "funciones de utilidad" (lista_vacia; 
+        lista_elementos; lista_ultimo; lista_elemento_en_posicion) en dos
+        secciones:
+        Una para probarlas exclusivamente sobre listas vacías, y otra para probarlas
+        sobre listas con elementos.
+        Esto debido a que, para poder realizar pruebas sobre listas con elementos, 
+        requería el uso de las funciones de inserción, especialmente la función
+        "lista_insertar" que es muy útil y conveniente (también considerando que con la
+        implementación actual, esta funcion es O(1) siempre, caso contrario de
+        "lista_insertar_en_posicion"). Sin embargo para poder utilizar
+        dicha función con toda seguridad, primero se debe asegurar su funcionamiento por medio
+        de las pruebas de inserción.
+        Es por esto que, recién despues de las mismas, se aplican las pruebas sobre listas con 
+        elementos para funciones de utilidad.
 
 
     ▒▒▒▒  Sobre los elementos pasados por parametro por el usuario.  ▒▒▒▒

@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 
-
+#define FALLO -1
 
 
 /**
@@ -39,14 +39,14 @@ lista_t* lista_crear(){
 
 int lista_insertar(lista_t* lista, void* elemento){
 
-    if(!lista || !elemento){
-        printf("\n\tFallo: Lista o elemento no validos al insertar\n");
-        return -1;
+    if(!lista){
+        printf("\n\tFallo: Lista no válida a insertar\n");
+        return FALLO;
     }
 
     nodo_t* nodo_nuevo = calloc(1, sizeof(nodo_t));
     if(!nodo_nuevo){
-        return -1;
+        return FALLO;
     }
 
     nodo_nuevo->elemento = elemento;
@@ -82,7 +82,7 @@ int insertar_al_inicio(lista_t* lista, void* elemento){
 
     nodo_t* nodo_nuevo = calloc(1, sizeof(nodo_t));
     if(!nodo_nuevo){
-        return -1;
+        return FALLO;
     }
 
     nodo_nuevo->elemento = elemento;
@@ -106,7 +106,7 @@ int insertar_en_posicion_intermedia(lista_t* lista, void* elemento, size_t posic
 
     nodo_t* nodo_nuevo = calloc(1, sizeof(nodo_t));
     if(!nodo_nuevo){
-        return -1;
+        return FALLO;
     }
 
     nodo_nuevo->elemento = elemento;
@@ -136,10 +136,10 @@ int insertar_en_posicion_intermedia(lista_t* lista, void* elemento, size_t posic
 
 int lista_insertar_en_posicion(lista_t* lista, void* elemento, size_t posicion){
     
-    int se_inserto = -1;
+    int se_inserto = FALLO;
 
-    if(!lista || !elemento){
-        printf("\n\tFallo: Lista o elemento no validos al insertar\n");
+    if(!lista){
+        printf("\n\tFallo: Lista no válida a insertar\n");
         return se_inserto;
     }
 
@@ -198,7 +198,7 @@ void borrar_ultimo_de_multiples(lista_t* lista){
 int lista_borrar(lista_t* lista){
 
     if(lista_vacia(lista)){
-        return -1;
+        return FALLO;
     }
 
     if(lista_tiene_elemento_unico(lista)){
@@ -227,11 +227,12 @@ int lista_borrar(lista_t* lista){
  * ni al final de una lista.
  * No se realizan verificaciones sobre la lista, 
  * función exclusiva de dicho caso particular ASEGURADO.
+ * Devuelve 0 si pudo borrar, -1 en caso contrario.
  */
 int borrador_elemento_intermedio(lista_t* lista , size_t posicion){
 
     if(posicion == 0){
-        return -1;
+        return FALLO;
     }
 
     size_t posicion_anterior_a_objetivo = (posicion - 1);
@@ -257,19 +258,48 @@ int borrador_elemento_intermedio(lista_t* lista , size_t posicion){
 
 
 
+/**
+ * Borra el elemento inicial de una lista con MÍNIMO 2 elementos.
+ * Devuelve 0 si pudo borrarlo, -1 en caso contrario.
+ */
+int borrador_elemento_inicial_de_multiples(lista_t* lista){
+
+    if(lista->nodo_inicio == lista->nodo_fin){
+        return FALLO;
+    }
+
+    nodo_t* nodo_a_eliminar = lista->nodo_inicio;
+
+    lista->nodo_inicio = lista->nodo_inicio->siguiente;
+
+    free(nodo_a_eliminar);
+
+    lista->cantidad--;
+
+    return 0;
+
+}
+
+
+
 
 int lista_borrar_de_posicion(lista_t* lista, size_t posicion){
 
-    int se_borro = -1;
-    
     if(lista_vacia(lista)){
-        return -1;
+        return FALLO;
     }
+
+    int se_borro = FALLO;
 
     if(posicion >= (lista->cantidad - 1)){
 
         se_borro = lista_borrar(lista);
     
+    }
+    else if((posicion == 0) && (lista->nodo_inicio != lista->nodo_fin)){
+
+        se_borro = borrador_elemento_inicial_de_multiples(lista);
+
     }
     else{
         
@@ -406,42 +436,90 @@ size_t lista_elementos(lista_t* lista){
 
 
 int lista_apilar(lista_t* lista, void* elemento){
-    return 0;
+
+    if(!lista){
+        return FALLO;
+    }
+
+    int se_apilo = lista_insertar_en_posicion(lista, elemento, 0);
+
+    return se_apilo;
+
 }
 
 
 
 
 int lista_desapilar(lista_t* lista){
-    return 0;
+
+    if(lista_vacia(lista)){
+        return FALLO;
+    }
+
+    int se_desapilo = lista_borrar_de_posicion(lista, 0);
+
+    return se_desapilo;
+
 }
 
 
 
 
 void* lista_tope(lista_t* lista){
-    return NULL;
+    
+    if(!lista){
+        return NULL;
+    }
+
+    void* elemento_tope = lista_elemento_en_posicion(lista, 0);
+    
+    return elemento_tope;
+
 }
 
 
 
 
 int lista_encolar(lista_t* lista, void* elemento){
-    return 0;
+
+    if(!lista){
+        return FALLO;
+    }
+
+    int se_encolo = lista_insertar(lista, elemento);
+
+    return se_encolo;
+
 }
 
 
 
 
 int lista_desencolar(lista_t* lista){
-    return 0;
+
+    if(lista_vacia(lista)){
+        return FALLO;
+    }
+
+    int se_desencolo = lista_borrar_de_posicion(lista, 0);
+
+    return se_desencolo;
+
 }
 
 
 
 
 void* lista_primero(lista_t* lista){
-    return NULL;
+
+    if(lista_vacia(lista)){
+        return NULL;
+    }
+
+    void* elemento_primero = lista_elemento_en_posicion(lista, 0);
+
+    return elemento_primero;
+
 }
 
 
@@ -477,38 +555,69 @@ void lista_destruir(lista_t* lista){
 
 
 
+
 lista_iterador_t* lista_iterador_crear(lista_t* lista){
+
+
+
     return NULL;
+
 }
 
+
+
+
+
 bool lista_iterador_tiene_siguiente(lista_iterador_t* iterador){
+
+
+
     return false;
+
 }
+
 
 
 
 
 bool lista_iterador_avanzar(lista_iterador_t* iterador){
+
+
+
     return false;
+
 }
+
 
 
 
 
 void* lista_iterador_elemento_actual(lista_iterador_t* iterador){
+
+
+
     return NULL;
+
 }
+
 
 
 
 
 void lista_iterador_destruir(lista_iterador_t* iterador){
 
+
+
 }
 
 
 
 
+
 size_t lista_con_cada_elemento(lista_t* lista, bool (*funcion)(void*, void*), void *contexto){
+
+
+
     return 0;
+
 }

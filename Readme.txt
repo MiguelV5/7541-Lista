@@ -114,5 +114,23 @@
             -Sigte. a [x] debe ser [e];
             -Sigte. a [o] debe ser [y]; 
 
+    ▒▒▒▒  Orden de pruebas de pila  ▒▒▒▒
+        Me causó inseguridad decidir qué orden debía tomar al implementar las pruebas
+        de pila, ya que:
+        Si testeaba primero las funciones apilar y desapilar, no era posible asegurar el 
+        correcto funcionamiento de la función lista_tope, por ende no podía emplearse
+        para probar que, por ejemplo, los elementos apilados fueran los topes nuevos, y
+        que al desapilar los topes nuevos pasaran a ser los elementos efectivamente 
+        "anteriores" a los ex-topes.
+        Sin embargo, si se testeaba primero la función lista_tope para evitar lo anterior,
+        estaba en una situación similar ya que en un principio las pruebas NO deberían saber
+        absolutamente nada de la implementación de pila, por ende para poder probar lista_tope
+        debía utilizar apilar y desapilar, y descartar uso de lista_insertar que no permite
+        evaluar el comportamiento como pila.
+        Luego caí en cuenta, y concluí entonces que la mejor opción era la 1ra (probar primero
+        apilar y desapilar), ya que son las que le dan el comportamiento de pila a la misma, y
+        luego en las pruebas de lista_tope testear efectivamente dicho comportamiento.
+        Un razonamiento similar fué aplicado para las funciones de cola.
+
 
         

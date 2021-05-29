@@ -7,21 +7,6 @@
 #define FALLO -1
 
 
-/**
- * Devuelve true si la lista tiene un solo elemento, false en caso contrario.
- */
-bool lista_tiene_elemento_unico(lista_t* lista){
-
-    if(lista_vacia(lista)){
-        return false;
-    }
-
-    return ((lista->cantidad == 1) && (lista->nodo_inicio == lista->nodo_fin));
-
-}
-
-
-
 
 lista_t* lista_crear(){
 
@@ -166,6 +151,7 @@ int lista_insertar_en_posicion(lista_t* lista, void* elemento, size_t posicion){
 
 
 
+
 /**
  * Borra el ultimo elemento de una lista de MÍNIMO 2 elementos.
  * No se realizan verificaciones sobre la lista, función exclusiva de
@@ -192,6 +178,20 @@ void borrar_ultimo_de_multiples(lista_t* lista){
 
 }
 
+
+
+/**
+ * Devuelve true si la lista tiene un solo elemento, false en caso contrario.
+ */
+bool lista_tiene_elemento_unico(lista_t* lista){
+
+    if(lista_vacia(lista)){
+        return false;
+    }
+
+    return ((lista->cantidad == 1) && (lista->nodo_inicio == lista->nodo_fin));
+
+}
 
 
 

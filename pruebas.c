@@ -198,7 +198,7 @@ void DadaListaConElementos_AlInsertarElementoEnUnaPosicionIntermedia_SeInsertaCo
   
   char a = 'a' , e = 'e' , i = 'i' , o = 'o' , u = 'u' , x = 'x' , y = 'y'; //Elementos de prueba
 
-  // Ver aclaración de lo siguiente en Readme.txt, sección Aclaraciones, linea {????????????????}
+  // Ver aclaración de lo siguiente en Readme.txt, sección Aclaraciones: "Cita de linea 201, pruebas.c"
 
   lista_insertar(lista, &a);
   nodo_t* auxiliar_nodo_a = lista->nodo_fin;

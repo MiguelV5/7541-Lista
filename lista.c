@@ -374,6 +374,22 @@ void* lista_elemento_en_posicion(lista_t* lista, size_t posicion){
 
 
 
+void* lista_ultimo(lista_t* lista){
+    
+    if(lista_vacia(lista)){
+        return NULL;
+    }
+    else{
+        return lista->nodo_fin->elemento;
+    }
+
+}
+
+
+
+
+
+
 bool lista_vacia(lista_t* lista){
 
     if(!lista){
@@ -385,21 +401,6 @@ bool lista_vacia(lista_t* lista){
     }
     else{
         return false;
-    }
-
-}
-
-
-
-
-
-void* lista_ultimo(lista_t* lista){
-    
-    if(lista_vacia(lista)){
-        return NULL;
-    }
-    else{
-        return lista->nodo_fin->elemento;
     }
 
 }
@@ -556,11 +557,45 @@ void lista_destruir(lista_t* lista){
 
 
 
+/**
+ * Devuelve true si el iterador externo es inexistente o no tiene elementos, false en caso contrario.
+*/
+bool iterador_externo_vacio(lista_iterador_t* iterador){
+
+    if(!iterador){
+        return true;
+    }
+    else if(lista_vacia(iterador->lista)){
+        return true;
+    }
+    else{
+        return false;
+    }
+
+}
+
+
+
+
+
+
 lista_iterador_t* lista_iterador_crear(lista_t* lista){
 
+    if(!lista){
+        printf("\n\tFallo: No se puede crear iterador de lista inexistente\n");
+        return NULL;
+    }
 
+    lista_iterador_t* iterador = calloc(1, sizeof(lista_iterador_t));
+    if(!iterador){
+        printf("\n\tFallo: No se pudo reservar memoria para iterador\n");
+        return NULL;
+    }
 
-    return NULL;
+    iterador->lista = lista;
+    iterador->corriente = lista->nodo_inicio;
+
+    return iterador;
 
 }
 
@@ -570,10 +605,16 @@ lista_iterador_t* lista_iterador_crear(lista_t* lista){
 
 bool lista_iterador_tiene_siguiente(lista_iterador_t* iterador){
 
-
-
-    return false;
-
+    if(iterador_externo_vacio(iterador)){
+        return false;
+    }
+    else if((iterador->corriente == NULL)){
+        return false;
+    }
+    else{
+        return true;
+    }
+    
 }
 
 
@@ -582,10 +623,17 @@ bool lista_iterador_tiene_siguiente(lista_iterador_t* iterador){
 
 bool lista_iterador_avanzar(lista_iterador_t* iterador){
 
+    if(lista_iterador_tiene_siguiente(iterador)){
+            
+        iterador->corriente = iterador->corriente->siguiente;
+        if((iterador->corriente != NULL)){
+            return true;
+        }
 
+    }
 
     return false;
-
+    
 }
 
 
@@ -594,9 +642,14 @@ bool lista_iterador_avanzar(lista_iterador_t* iterador){
 
 void* lista_iterador_elemento_actual(lista_iterador_t* iterador){
 
+    if(iterador_externo_vacio(iterador)){
+        return NULL;
+    }
+    else if(!iterador->corriente){
+        return NULL;
+    }
 
-
-    return NULL;
+    return iterador->corriente->elemento;
 
 }
 
@@ -606,7 +659,12 @@ void* lista_iterador_elemento_actual(lista_iterador_t* iterador){
 
 void lista_iterador_destruir(lista_iterador_t* iterador){
 
+    if(!iterador){
+        printf("\n\tFallo: No existe iterador a destruir");
+        return;
+    }
 
+    free(iterador);
 
 }
 
@@ -616,8 +674,20 @@ void lista_iterador_destruir(lista_iterador_t* iterador){
 
 size_t lista_con_cada_elemento(lista_t* lista, bool (*funcion)(void*, void*), void *contexto){
 
+    if(!lista || !funcion){
+        return 0;
+    }
 
+    size_t cantidad_iteraciones = 0;
+    nodo_t* nodo_actual = lista->nodo_inicio;
 
-    return 0;
+    while((nodo_actual != NULL) && (funcion(nodo_actual->elemento, contexto))){
+        
+        nodo_actual = nodo_actual->siguiente;
+        cantidad_iteraciones++;
+
+    }
+
+    return cantidad_iteraciones;
 
 }

@@ -98,13 +98,13 @@
 
     ▒▒▒▒  Sobre los elementos pasados por parametro por el usuario.  ▒▒▒▒
         Los datos que el usuario almacene se asumen como su responsabilidad, y en ningún
-        momento se modifica o verifica el elemento que requiera insertar, salvo si es NULL o no.
+        momento se modifica o verifica el elemento que requiera insertar.
         Esto excluye entonces al manejo de memoria de dichos elementos, por lo cual debe ser
         administrada a su vez por el usuario (claramente, solo en caso de tener
         elementos almacenados en el Heap).
 
 
-    ▒▒▒▒  Cita de linea 215, pruebas.c  ▒▒▒▒
+    ▒▒▒▒  Cita de linea 201, pruebas.c  ▒▒▒▒
         Se tiene:
             [a]->[e]->[i]->[o]->[u]
             [inicio] == [a] ; [fin] == [u]
@@ -114,7 +114,7 @@
             -Sigte. a [x] debe ser [e];
             -Sigte. a [o] debe ser [y]; 
 
-    ▒▒▒▒  Orden de pruebas de pila  ▒▒▒▒
+    ▒▒▒▒  Orden de pruebas de pila, cola e iterador externo  ▒▒▒▒
         Me causó inseguridad decidir qué orden debía tomar al implementar las pruebas
         de pila, ya que:
         Si testeaba primero las funciones apilar y desapilar, no era posible asegurar el 
@@ -131,6 +131,49 @@
         apilar y desapilar), ya que son las que le dan el comportamiento de pila a la misma, y
         luego en las pruebas de lista_tope testear efectivamente dicho comportamiento.
         Un razonamiento similar fué aplicado para las funciones de cola.
+
+    ▒▒▒▒  Uso de función lista_elemento_en_posicion en las pruebas  ▒▒▒▒
+        A lo largo de las pruebas posteriores a las de dicha función, solía usar
+        nodos auxiliares que fueran guardando los elementos que iba insertando en las
+        diversas listas de prueba. Sin embargo, pude haberme ahorrado esto usando lista_elemento_en_posicion
+        ya que se tenía probada, pero recién durante la realización de las pruebas de
+        iteradores caí en cuenta de este detalle.
+
+    ▒▒▒▒  Sobre comportamiento de lista_iterador_tiene_siguiente y lista_iterador_avanzar  ▒▒▒▒
+        El nombre "tiene siguiente" puede prestarse a confusión, ya que en realidad la
+        función, aparte de verificar iterador vacío, devuelve true SI LE QUEDAN ELEMENTOS por "devolver"
+        en una iteración en general, con lo cual siempre se fija en que el elemento ACTUAL exista o no, y 
+        en ningún momento se fija en el nodo que le sigue.
+        Ejemplificando con el minipruebas.c, se hace la iteración:
+
+            for(it = lista_iterador_crear(lista);    <---- (1)
+                lista_iterador_tiene_siguiente(it);    <---- (2)
+                lista_iterador_avanzar(it))        <---- (4)
+                printf("%c ", *(char*)lista_iterador_elemento_actual(it));   <---- (3)
+            printf("\n\n");
+
+        De donde el objetivo es imprimir a b c d, entonces:
+        (1) Se crea el iterador, con lo cual el elemento actual ahora es 'a'.
+        (2) Con el comportamiento explicado, se fija si existe elemento actual. Lo cual es true. Entonces...
+        (3) Imprime 'a'.
+        (4) Avanza y devuelve true porque el nuevo elemento actual existe, 
+        Volvemos a (2)
+        (2) Existe actual ---> true (ahora el actual es 'b').
+        (3) Imprime 'b'
+        (4) Lo mismo que antes.
+            .
+            . (Mismo proceso para 'c')
+            .
+        Volvemos a (2) tras iterar el 'c'
+        (2) Existe actual ---> true (ahora el actual es 'd', si tiene_siguiente devolviera false al fijarse en
+        que el NODO siguiente es NULL y NO en que el elemento actual existe, acá cortaría la iteración y quedaría
+        sin imprimirse el 'd').
+        (3) Imprime 'd'
+        (4) Avanza por ultima vez, pero devuelve false porque ya estaba en el último elemento.
+
+
+
+
 
 
         

@@ -901,29 +901,321 @@ void DadaColaConElementos_AlPedirPrimeroEnVariadasSituaciones_SeDevuelveElemento
 
 
 
+// ITERADOR INTERNO
+
+
+
+
+/**
+ * Funcion auxiliar para desarrollo de estas pruebas:
+ *  - aumentar_entero.
+*/
+
+/**
+ * Suma un aumento a un entero. 
+ * Devuelve true si se sumó correctamente, false en caso contrario.
+*/
+bool aumentar_entero(void* entero_a_sumar, void* aumento){
+
+  if(!entero_a_sumar){ // Caso para probar comportamiento de corte de iteración.
+    return false;
+  }
+
+  int* _entero_a_sumar = entero_a_sumar;
+  int* _aumento = aumento;
+
+  (*_entero_a_sumar) += (*_aumento);
+
+  return true;
+
+}
+
+
+
+void DadaListaOFuncionInexistentes_AlUsarIterInterno_SeDevuelveCero(){
+
+  lista_t* lista = NULL;
+  int aumento = 1;
+
+  size_t cantidad_de_iteraciones = lista_con_cada_elemento(lista, aumentar_entero, &aumento);
+  pa2m_afirmar( cantidad_de_iteraciones == 0 , "No se puede usar iterador interno en lista inexistente.");
+
+  lista = lista_crear();
+  cantidad_de_iteraciones = lista_con_cada_elemento(lista, NULL, &aumento);
+  pa2m_afirmar( cantidad_de_iteraciones == 0 , "No se puede usar iterador interno con un puntero a función NULL.");
+
+  lista_destruir(lista);
+
+  printf("\n");
+
+}
+
+
+
+
+
+void DadaListaConEnteros_AlUsarIterInternoParaSumarCadaElemento_SeAumentanCorrectamenteTodos(){
+
+  lista_t* lista = lista_crear();
+
+  int uno = 1, dos = 2, tres = 3, cuatro = 4;
+
+  lista_insertar(lista, &uno);
+  lista_insertar(lista, &dos);
+  lista_insertar(lista, &tres);
+  lista_insertar(lista, &cuatro);
+
+  int aumento = 1;
+
+  size_t cantidad_de_iteraciones = lista_con_cada_elemento(lista, aumentar_entero, &aumento);
+  pa2m_afirmar( cantidad_de_iteraciones == 4 , "Se iteraron todos los elementos de la lista para sumarles uno.");
+  pa2m_afirmar( *(int*)lista_elemento_en_posicion(lista, 0) == 2 , "El primer elemento es ahora 2.");
+  pa2m_afirmar( *(int*)lista_elemento_en_posicion(lista, 1) == 3 , "El segundo elemento es ahora 3.");
+  pa2m_afirmar( *(int*)lista_elemento_en_posicion(lista, 2) == 4 , "El tercer elemento es ahora 4.");
+  pa2m_afirmar( *(int*)lista_elemento_en_posicion(lista, 3) == 5 , "El cuarto elemento es ahora 5.");
+
+  lista_destruir(lista);
+
+  printf("\n");
+
+}
+
+
+
+
+
+void DadaListaConElementos_SiSeUsaIterInternoYFuncionDevuelveFalseDuranteIteracion_SeCortaIteracionAhi(){
+
+  lista_t* lista = lista_crear();
+
+  int uno = 1, dos = 2, cuatro = 4;
+
+  lista_insertar(lista, &uno);
+  lista_insertar(lista, &dos);
+  lista_insertar(lista, NULL);
+  lista_insertar(lista, &cuatro);
+
+  int aumento = 1;
+
+  size_t cantidad_de_iteraciones = lista_con_cada_elemento(lista, aumentar_entero, &aumento);
+  pa2m_afirmar( cantidad_de_iteraciones == 2 , "Se iteraron los elementos hasta que la función pasada por parametro devolvió false.");
+  
+  bool se_opero_hasta_cortar = (*(int*)lista_elemento_en_posicion(lista, 0) == 2) && (*(int*)lista_elemento_en_posicion(lista, 1) == 3);
+
+  pa2m_afirmar( se_opero_hasta_cortar , "Las operaciones previas al corte fueron correctamente realizadas por la función.");
+
+  lista_destruir(lista);
+
+  printf("\n");
+
+}
+
+
+
+// ITERADOR EXTERNO
+
+
+void DadaListaInexistente_AlIntentarCrearIteradorExterno_SeDevuelveNull(){
+
+  lista_t* lista = NULL;
+  lista_iterador_t* iter = lista_iterador_crear(lista);
+  pa2m_afirmar( iter == NULL , "No se puede crear iterador externo de una lista inexistente.");
+  printf("\n");
+
+}
+
+
+
+
+
+void DadaListaConOSinElementos_AlCrearIteradorExterno_SeCreaCorrectamente(){
+
+  lista_t* lista = lista_crear();
+  lista_iterador_t* iter = lista_iterador_crear(lista);
+
+  pa2m_afirmar( (iter != NULL) && (iter->corriente == lista->nodo_inicio) , "Se crea correctamente iterador de una lista existente.");
+
+  lista_destruir(lista);
+  lista_iterador_destruir(iter);
+
+  printf("\n");
+
+}
 
 
 
 
 
 
+void DadoIteradorExternoVacio_AlPedirElementoActual_SeDevuelveNull(){
+
+  lista_iterador_t* iter = NULL;
+
+  pa2m_afirmar( lista_iterador_elemento_actual(iter) == NULL , "Al pedir elemento actual de iterador inexistente se devuelve NULL");
+  
+  lista_t* lista = lista_crear();
+  iter = lista_iterador_crear(lista);
+
+  pa2m_afirmar( lista_iterador_elemento_actual(iter) == NULL , "Al pedir elemento actual de iterador sin elementos se devuelve NULL");
+  
+  lista_destruir(lista);
+  lista_iterador_destruir(iter);
+
+  printf("\n");
+
+}
 
 
 
 
 
 
+void DadoIteradorExternoConElementos_AlPedirElementoActualValido_SeDevuelveDichoElemento(){
+
+  lista_t* lista = lista_crear();
+  int uno = 1;
+  lista_insertar(lista, &uno);
+
+  lista_iterador_t* iter = lista_iterador_crear(lista);
+
+  pa2m_afirmar( lista_iterador_elemento_actual(iter) == &uno , "Elemento actual de un iterador con un elemento es el correcto.");
+  
+  lista_destruir(lista);
+  lista_iterador_destruir(iter);
+
+  printf("\n");
+
+}
 
 
 
 
 
 
+void DadoIteradorExternoVacio_SiSePreguntaSiTieneSiguiente_SeDevuelveFalse(){
+
+  lista_iterador_t* iter = NULL;
+  pa2m_afirmar( lista_iterador_tiene_siguiente(iter) == false , "Iterador inexistente no puede tener elemento siguiente.");
+  
+  lista_t* lista = lista_crear();
+  iter = lista_iterador_crear(lista);
+  pa2m_afirmar( lista_iterador_tiene_siguiente(iter) == false , "Iterador existente sin elementos no puede tener elemento siguiente.");
+  
+  lista_destruir(lista);
+  lista_iterador_destruir(iter);
+
+  printf("\n");
+
+}
 
 
 
 
 
+void DadoIteradorConCorrienteInexistente_SiSePreguntaSiTieneSiguiente_SeDevuelveFalse(){
+
+  lista_t* lista = lista_crear();
+  int uno = 1;
+  lista_insertar(lista, &uno);
+
+  lista_iterador_t* iter = lista_iterador_crear(lista);
+
+  iter->corriente = NULL; //Todavía no se probó avanzar, entonces se analiza caso artificial manual en el que se avanzó despues del uno.
+
+  pa2m_afirmar( lista_iterador_tiene_siguiente(iter) == false , "Cuando el elemento actual (corriente) no existe, no hay siguiente en el iterador.");
+  
+  lista_destruir(lista);
+  lista_iterador_destruir(iter);
+
+}
+
+
+
+
+
+void DadoIteradorExternoConElementos_SiCorrienteExiste_EntoncesTieneSiguienteDevuelveTrue(){
+
+  lista_t* lista = lista_crear();
+  int uno = 1;
+  lista_insertar(lista, &uno);
+
+  lista_iterador_t* iter = lista_iterador_crear(lista);
+
+  pa2m_afirmar( lista_iterador_tiene_siguiente(iter) == true , "Cuando el elemento actual (corriente) existe, hay siguiente en el iterador.");
+  
+  lista_destruir(lista);
+  lista_iterador_destruir(iter);
+
+  printf("\n");
+
+}
+
+
+
+
+
+
+void DadoIteradorExternoVacio_SiSePideAvanzar_SeDevuelveFalse(){
+
+  lista_iterador_t* iter = NULL;
+  pa2m_afirmar( lista_iterador_avanzar(iter) == false , "Iterador inexistente no puede avanzar.");
+  
+  lista_t* lista = lista_crear();
+  iter = lista_iterador_crear(lista);
+  pa2m_afirmar( lista_iterador_avanzar(iter) == false , "Iterador existente sin elementos no puede avanzar.");
+  
+  lista_destruir(lista);
+  lista_iterador_destruir(iter);
+
+  printf("\n");
+
+}
+
+
+
+
+
+void DadoIteradorExternoConElementos_SiHayElementoSiguienteParaAvanzar_SeDevuelveTrueYSeAvanza(){
+
+  lista_t* lista = lista_crear();
+  int uno = 1, dos = 2 , tres = 3 ;
+  lista_insertar(lista, &uno);
+  lista_insertar(lista, &dos);
+  lista_insertar(lista, &tres);
+
+  lista_iterador_t* iter = lista_iterador_crear(lista);
+
+  pa2m_afirmar( (lista_iterador_avanzar(iter) == true) && (iter->corriente->elemento == &dos), "Hay elemento siguiente para avanzar en el iterador, entonces se avanza una vez.");
+  pa2m_afirmar( (lista_iterador_avanzar(iter) == true) && (iter->corriente->elemento == &tres) , "Hay elemento siguiente, se avanza otra vez.");
+  
+  lista_destruir(lista);
+  lista_iterador_destruir(iter);
+
+  printf("\n");
+
+}
+
+
+
+
+
+void DadoIteradorExternoConElementos_SiNoHayElementoSiguienteParaAvanzar_SeDevuelveFalse(){
+
+  lista_t* lista = lista_crear();
+  int uno = 1;
+  lista_insertar(lista, &uno);
+
+  lista_iterador_t* iter = lista_iterador_crear(lista);
+
+  pa2m_afirmar( (lista_iterador_avanzar(iter) == false) && (lista_iterador_elemento_actual(iter) == NULL) , "Quedaba solo el elemento actual en el iterador, entonces se avanza una vez, pero devuelve false.");
+  pa2m_afirmar( lista_iterador_avanzar(iter) == false , "Ya no quedan elementos, no se puede avanzar.");
+  
+  lista_destruir(lista);
+  lista_iterador_destruir(iter);
+
+  printf("\n");
+
+}
 
 
 
@@ -999,12 +1291,25 @@ int main() {
 
   pa2m_nuevo_grupo("Pruebas de iterador interno");
 
-    //Dada_Al_Se();
-    //Dada_Al_Se();
-    //Dada_Al_Se();
-    //Dada_Al_Se();
+    DadaListaOFuncionInexistentes_AlUsarIterInterno_SeDevuelveCero();
+    DadaListaConEnteros_AlUsarIterInternoParaSumarCadaElemento_SeAumentanCorrectamenteTodos();
+    DadaListaConElementos_SiSeUsaIterInternoYFuncionDevuelveFalseDuranteIteracion_SeCortaIteracionAhi();
 
   pa2m_nuevo_grupo("Pruebas de iterador externo");
+    //CREAR
+    DadaListaInexistente_AlIntentarCrearIteradorExterno_SeDevuelveNull();
+    DadaListaConOSinElementos_AlCrearIteradorExterno_SeCreaCorrectamente();
+    //ELEMENTO ACTUAL
+    DadoIteradorExternoVacio_AlPedirElementoActual_SeDevuelveNull(); // Sigue aplicando la misma notación de "vacío".
+    DadoIteradorExternoConElementos_AlPedirElementoActualValido_SeDevuelveDichoElemento();
+    //TIENE SIGUIENTE
+    DadoIteradorExternoVacio_SiSePreguntaSiTieneSiguiente_SeDevuelveFalse();
+    DadoIteradorConCorrienteInexistente_SiSePreguntaSiTieneSiguiente_SeDevuelveFalse();
+    DadoIteradorExternoConElementos_SiCorrienteExiste_EntoncesTieneSiguienteDevuelveTrue(); //Ver aclaración en sección Aclaraciones del Readme.txt, de este comportamiento se basa el uso de avanzar.
+    //AVANZAR
+    DadoIteradorExternoVacio_SiSePideAvanzar_SeDevuelveFalse();
+    DadoIteradorExternoConElementos_SiHayElementoSiguienteParaAvanzar_SeDevuelveTrueYSeAvanza();
+    DadoIteradorExternoConElementos_SiNoHayElementoSiguienteParaAvanzar_SeDevuelveFalse();
 
 
   return pa2m_mostrar_reporte();

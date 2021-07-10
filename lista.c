@@ -5,14 +5,13 @@
 
 
 #define FALLO -1
-
+#define EXITO 0
 
 
 lista_t* lista_crear(){
 
     lista_t* lista = calloc(1, sizeof(lista_t));
     if(!lista){
-        printf("\n\tFallo: No se pudo reservar la lista en memoria\n");
         return NULL;
     }
     
@@ -25,7 +24,6 @@ lista_t* lista_crear(){
 int lista_insertar(lista_t* lista, void* elemento){
 
     if(!lista){
-        printf("\n\tFallo: Lista no válida a insertar\n");
         return FALLO;
     }
 
@@ -52,7 +50,7 @@ int lista_insertar(lista_t* lista, void* elemento){
 
     }
 
-    return 0;
+    return EXITO;
 
 }
 
@@ -76,7 +74,7 @@ int insertar_al_inicio(lista_t* lista, void* elemento){
 
     lista->cantidad++;
 
-    return 0;
+    return EXITO;
 
 }
 
@@ -111,7 +109,7 @@ int insertar_en_posicion_intermedia(lista_t* lista, void* elemento, size_t posic
 
     lista->cantidad++;
 
-    return 0;
+    return EXITO;
 
 }
 
@@ -124,8 +122,7 @@ int lista_insertar_en_posicion(lista_t* lista, void* elemento, size_t posicion){
     int se_inserto = FALLO;
 
     if(!lista){
-        printf("\n\tFallo: Lista no válida a insertar\n");
-        return se_inserto;
+        return FALLO;
     }
 
     if(posicion >= lista->cantidad){ 
@@ -215,7 +212,7 @@ int lista_borrar(lista_t* lista){
 
     }
 
-    return 0;
+    return EXITO;
 
 }
 
@@ -252,7 +249,7 @@ int borrador_elemento_intermedio(lista_t* lista , size_t posicion){
     free(nodo_a_eliminar);
     lista->cantidad--;
 
-    return 0;
+    return EXITO;
 
 }
 
@@ -276,7 +273,7 @@ int borrador_elemento_inicial_de_multiples(lista_t* lista){
 
     lista->cantidad--;
 
-    return 0;
+    return EXITO;
 
 }
 
@@ -344,11 +341,9 @@ void* obtencion_elemento_intermedio(lista_t* lista, size_t posicion){
 void* lista_elemento_en_posicion(lista_t* lista, size_t posicion){
 
     if(lista_vacia(lista)){
-        printf("\n\tFallo: Se pide un elemento de una lista vacía\n");
         return NULL;
     }
     else if(posicion >= lista->cantidad){
-        printf("\n\tFallo: No existe posición de elemento pedido en la lista\n");
         return NULL;
     }
     
@@ -529,7 +524,6 @@ void* lista_primero(lista_t* lista){
 void lista_destruir(lista_t* lista){
     
     if(!lista){
-        printf("\n\tFallo: No existe la lista a destruir.\n");
         return;
     }
     else{
@@ -582,13 +576,11 @@ bool iterador_externo_vacio(lista_iterador_t* iterador){
 lista_iterador_t* lista_iterador_crear(lista_t* lista){
 
     if(!lista){
-        printf("\n\tFallo: No se puede crear iterador de lista inexistente\n");
         return NULL;
     }
 
     lista_iterador_t* iterador = calloc(1, sizeof(lista_iterador_t));
     if(!iterador){
-        printf("\n\tFallo: No se pudo reservar memoria para iterador\n");
         return NULL;
     }
 
@@ -660,7 +652,6 @@ void* lista_iterador_elemento_actual(lista_iterador_t* iterador){
 void lista_iterador_destruir(lista_iterador_t* iterador){
 
     if(!iterador){
-        printf("\n\tFallo: No existe iterador a destruir");
         return;
     }
 

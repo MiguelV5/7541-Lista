@@ -411,19 +411,7 @@ size_t lista_elementos(lista_t* lista){
         return 0;
     }
     else{
-
-        nodo_t* nodo_actual = lista->nodo_inicio;
-        size_t contador_elementos = 0;
-
-        while(nodo_actual != NULL){
-
-            contador_elementos++;
-            nodo_actual = nodo_actual->siguiente;
-
-        }
-
-        return contador_elementos;
-
+        return lista->cantidad;
     }
 
 }
